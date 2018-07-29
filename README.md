@@ -1,6 +1,13 @@
 # VSCode Extension to Fix Checksums
 
-An extension to to adjust checksums after changes to core files.
+An extension to to adjust checksums after changes to VSCode core files. Once the
+checksum changes are applied and VSCode is restarted, all warning about core
+file modifications will disappear, such as the display of `[Unsupported]` in the
+title-bar, or the following dialog on start-up:
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/lehni/vscode-fix-checksums/master/resources/corrupt.png" alt="Corrupt">
+</p>
 
 ## Installation
 
@@ -23,8 +30,8 @@ code --install-extension lehni.vscode-fix-checksums
 The extension adds 2 new commands to the command palette:
 
 ```js
-Fix Checksums: Apply //
-Fix Checksums: Restore //
+Fix Checksums: Apply // Checks core files for changes and applies new checksums.
+Fix Checksums: Restore // Restores original state of VSCode checkums.
 ```
 
 After executing either of these commands, you need to fully restart VSCode in
@@ -50,7 +57,7 @@ sudo "/Applications/Visual Studio Code - Insiders.app/Contents/MacOS/Electron"
 ```
 
 Once you ave applied the modifications by executing `Fix Checksums: Apply` as
-root, quit VScode and start it normally without root privileges again.
+root, quit VSCode and start it normally without root privileges again.
 
 ## Disclaimer / A Word of Caution
 
