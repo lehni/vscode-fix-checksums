@@ -65,12 +65,12 @@ function restore() {
 }
 
 function computeChecksum(file) {
-	var contents = fs.readFileSync(file)
-	return crypto
-		.createHash('md5')
-		.update(contents)
-		.digest('base64')
-		.replace(/=+$/, '')
+  var contents = fs.readFileSync(file)
+  return crypto
+    .createHash('md5')
+    .update(contents)
+    .digest('base64')
+    .replace(/=+$/, '')
 }
 
 function cleanupOrigFiles() {
