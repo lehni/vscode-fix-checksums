@@ -1,0 +1,60 @@
+{
+  "name": "vscode-fix-checksums",
+  "displayName": "Fix VSCode Checksums",
+  "description": "An extension to adjust checksums after changes to core files",
+  "icon": "resources/logo.png",
+  "version": "1.3.1",
+  "license": "MIT",
+  "main": "./extension",
+  "publisher": "lehni",
+  "author": {
+    "name": "Jürg Lehni",
+    "email": "juerg@scratchdisk.com"
+  },
+  "bugs": {
+    "url": "https://github.com/lehni/vscode-fix-checksums/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/lehni/vscode-fix-checksums"
+  },
+  "engines": {
+    "vscode": "^1.25.0"
+  },
+  "keywords": [
+    "vscode",
+    "vsc",
+    "extension",
+    "fix",
+    "checksum",
+    "checksums"
+  ],
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onCommand:fixChecksums.apply",
+    "onCommand:fixChecksums.restore"
+  ],
+  "contributes": {
+    "commands": [
+      {
+        "command": "fixChecksums.apply",
+        "title": "Fix Checksums: Apply"
+      },
+      {
+        "command": "fixChecksums.restore",
+        "title": "Fix Checksums: Restore"
+      }
+    ]
+  },
+  "scripts": {
+    "postinstall": "node ./node_modules/vscode/bin/install"
+  },
+  "devDependencies": {
+    "@types/node": "^7.0.43",
+    "@types/mocha": "^2.2.42",
+    "eslint": "^4.11.0",
+    "vscode": "^1.1.6"
+  }
+}
