@@ -3,7 +3,7 @@
   "displayName": "Fix VSCode Checksums",
   "description": "A VSCode extension to adjust checksums after changes to core files",
   "icon": "resources/logo.png",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "license": "MIT",
   "main": "./extension",
   "publisher": "lehni",
