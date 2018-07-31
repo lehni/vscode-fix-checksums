@@ -1,5 +1,9 @@
 # Change Log
 
+## Version 1.1.0
+
+- Only create backup file if none exists yet for current VSCode version
+
 ## Version 1.0.2
 
 - Add recommendations
