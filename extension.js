@@ -38,7 +38,9 @@ function apply() {
   if (changed) {
     const json = JSON.stringify(product, null, '\t')
     try {
-      fs.renameSync(productFile, origFile)
+      if (!fs.existsSync(origFile)) {
+        fs.renameSync(productFile, origFile)
+      }
       fs.writeFileSync(productFile, json, { encoding: 'utf8' })
       message = messages.changed('applied')
     } catch (err) {
