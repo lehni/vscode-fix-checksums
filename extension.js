@@ -1,8 +1,8 @@
 const vscode = require('vscode')
 const crypto = require('crypto')
 const path = require('path')
-const sudo = require("sudo-prompt")
-const tmp = require("tmp")
+const sudo = require('sudo-prompt')
+const tmp = require('tmp')
 const fs = require('fs')
 
 const appDir = path.dirname(require.main.filename)
@@ -88,8 +88,8 @@ function cleanupOrigFiles() {
   }
 }
 
-function writeFileAdmin(filePath, writeString, encoding = "utf-8", promptName = "File Writer") {
-  console.info("Writing file with administrator priveleges.")
+function writeFileAdmin(filePath, writeString, encoding = 'utf-8', promptName = 'File Writer') {
+  console.info('Writing file with administrator priveleges.')
 
   return new Promise((resolve, reject) => {
     tmp.file((error, tempFilePath) => {
@@ -97,8 +97,8 @@ function writeFileAdmin(filePath, writeString, encoding = "utf-8", promptName = 
       else fs.writeFile(tempFilePath, writeString, encoding, (error) => {
         if (error) reject(error)
         else sudo.exec(
-          (process.platform === "win32" ? "copy " : "cp ") +
-          "\"" + tempFilePath + "\" \"" + filePath + "\"",
+          (process.platform === 'win32' ? 'copy ' : 'cp ') +
+          '"' + tempFilePath + '" "' + filePath + '"',
           { name: promptName },
           (error) => {
             if (error) reject(error)
@@ -110,13 +110,13 @@ function writeFileAdmin(filePath, writeString, encoding = "utf-8", promptName = 
   });
 }
 
-function renameFileAdmin(filePath, newPath, promptName = "File Renamer") {
-  console.info("Renaming file with administrator privileges")
+function renameFileAdmin(filePath, newPath, promptName = 'File Renamer') {
+  console.info('Renaming file with administrator privileges')
 
   return new Promise((resolve, reject) => {
     sudo.exec(
-      (process.platform === "win32" ? "ren " : "mv ") +
-      "\"" + filePath + "\" \"" + newPath + "\"",
+      (process.platform === 'win32' ? 'ren ' : 'mv ') +
+      '"' + filePath + '" "' + newPath + '"',
       { name: promptName },
       (error) => {
         if (error) reject(error)
