@@ -50,6 +50,10 @@
   "scripts": {
     "postinstall": "node ./node_modules/vscode/bin/install"
   },
+  "dependencies": {
+    "sudo-prompt": "^8.2.0",
+    "tmp": "^0.0.33"
+  },
   "devDependencies": {
     "@types/node": "^7.0.43",
     "@types/mocha": "^2.2.42",
