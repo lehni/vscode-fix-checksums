@@ -1,7 +1,9 @@
 const vscode = require('vscode')
-const fs = require('fs')
-const path = require('path')
 const crypto = require('crypto')
+const path = require('path')
+const sudo = require("sudo-prompt")
+const tmp = require("tmp")
+const fs = require('fs')
 
 const appDir = path.dirname(require.main.filename)
 const rootDir = path.join(appDir, '..')
@@ -41,7 +43,7 @@ function apply() {
       if (!fs.existsSync(origFile)) {
         fs.renameSync(productFile, origFile)
       }
-      fs.writeFileSync(productFile, json, { encoding: 'utf8' })
+      writeFileAdmin(productFile, json)
       message = messages.changed('applied')
     } catch (err) {
       console.error(err)
@@ -84,4 +86,26 @@ function cleanupOrigFiles() {
   for (const file of oldOrigFiles) {
     fs.unlinkSync(path.join(rootDir, file))
   }
+}
+
+function writeFileAdmin(filePath, writeString, encoding = "utf-8", promptName = "File Writer") {
+  console.info("Writing file with administrator priveleges.")
+
+  return new Promise((resolve, reject) => {
+    tmp.file((error, tempFilePath) => {
+      if (error) reject(error)
+      else fs.writeFile(tempFilePath, writeString, encoding, (error) => {
+        if (error) reject(error)
+        else sudo.exec(
+          (process.platform === "win32" ? "copy " : "cp ") +
+          "\"" + tempFilePath + "\" \"" + filePath + "\"",
+          { name: promptName },
+          (error) => {
+            if (error) reject(error)
+            else resolve(error)
+          }
+        );
+      });
+    });
+  });
 }
