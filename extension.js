@@ -41,7 +41,7 @@ function apply() {
     const json = JSON.stringify(product, null, '\t')
     try {
       if (!fs.existsSync(origFile)) {
-        fs.renameSync(productFile, origFile)
+        renameFileAdmin(productFile, origFile)
       }
       writeFileAdmin(productFile, json)
       message = messages.changed('applied')
@@ -58,7 +58,7 @@ function restore() {
   try {
     if (fs.existsSync(origFile)) {
       fs.unlinkSync(productFile)
-      fs.renameSync(origFile, productFile)
+      renameFileAdmin(origFile, productFile)
       message = messages.changed('restored')
     }
   } catch (err) {
@@ -107,5 +107,21 @@ function writeFileAdmin(filePath, writeString, encoding = "utf-8", promptName = 
         );
       });
     });
+  });
+}
+
+function renameFileAdmin(filePath, newPath, promptName = "File Renamer") {
+  console.info("Renaming file with administrator privileges")
+
+  return new Promise((resolve, reject) => {
+    sudo.exec(
+      (process.platform === "win32" ? "ren " : "mv ") +
+      "\"" + filePath + "\" \"" + newPath + "\"",
+      { name: promptName },
+      (error) => {
+        if (error) reject(error)
+        else resolve(error)
+      }
+    );
   });
 }
