@@ -41,9 +41,12 @@ function apply() {
     const json = JSON.stringify(product, null, '\t')
     try {
       if (!fs.existsSync(origFile)) {
-        renameFileAdmin(productFile, origFile)
+        moveFileAdmin(productFile, origFile).then(
+          () => writeFileAdmin(productFile, json)
+        ).catch(console.log)
+      } else {
+        writeFileAdmin(productFile, json)
       }
-      writeFileAdmin(productFile, json)
       message = messages.changed('applied')
     } catch (err) {
       console.error(err)
@@ -57,8 +60,9 @@ function restore() {
   let message = messages.unchanged
   try {
     if (fs.existsSync(origFile)) {
-      fs.unlinkSync(productFile)
-      renameFileAdmin(origFile, productFile)
+      deleteFileAdmin(productFile).then(
+        () => moveFileAdmin(origFile, productFile)
+      ).catch(console.log)
       message = messages.changed('restored')
     }
   } catch (err) {
@@ -84,7 +88,7 @@ function cleanupOrigFiles() {
     .filter(file => /\.orig\./.test(file))
     .filter(file => !file.endsWith(vscode.version))
   for (const file of oldOrigFiles) {
-    fs.unlinkSync(path.join(rootDir, file))
+    deleteFileAdmin(path.join(rootDir, file))
   }
 }
 
@@ -97,7 +101,7 @@ function writeFileAdmin(filePath, writeString, encoding = 'utf-8', promptName = 
       else fs.writeFile(tempFilePath, writeString, encoding, (error) => {
         if (error) reject(error)
         else sudo.exec(
-          (process.platform === 'win32' ? 'copy ' : 'cp ') +
+          (process.platform === 'win32' ? 'copy /y ' : 'cp -f ') +
           '"' + tempFilePath + '" "' + filePath + '"',
           { name: promptName },
           (error) => {
@@ -110,12 +114,28 @@ function writeFileAdmin(filePath, writeString, encoding = 'utf-8', promptName = 
   });
 }
 
-function renameFileAdmin(filePath, newPath, promptName = 'File Renamer') {
+function deleteFileAdmin(filePath, promptName = 'File Deleter') {
+  console.info('Deleting file with administrator privileges')
+
+  return new Promise((resolve, reject) => {
+    sudo.exec(
+      (process.platform === 'win32' ? 'del /f /q ' : 'rm -f ') +
+      '"' + filePath + '"',
+      { name: promptName },
+      (error) => {
+        if (error) reject(error)
+        else resolve(error)
+      }
+    );
+  });
+}
+
+function moveFileAdmin(filePath, newPath, promptName = 'File Renamer') {
   console.info('Renaming file with administrator privileges')
 
   return new Promise((resolve, reject) => {
     sudo.exec(
-      (process.platform === 'win32' ? 'ren ' : 'mv ') +
+      (process.platform === 'win32' ? 'move /y ' : 'mv -f ') +
       '"' + filePath + '" "' + newPath + '"',
       { name: promptName },
       (error) => {
