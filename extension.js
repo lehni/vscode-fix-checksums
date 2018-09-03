@@ -43,7 +43,7 @@ function apply() {
       if (!fs.existsSync(origFile)) {
         moveFileAdmin(productFile, origFile).then(
           () => writeFileAdmin(productFile, json)
-        ).catch(console.log)
+        ).catch(error => { throw error })
       } else {
         writeFileAdmin(productFile, json)
       }
@@ -53,23 +53,27 @@ function apply() {
       message = messages.error
     }
   }
-  vscode.window.showInformationMessage(message)
+  if (changed) reloadWindow(message)
+  else vscode.window.showInformationMessage(message)
 }
 
 function restore() {
   let message = messages.unchanged
+  let reload = false;
   try {
     if (fs.existsSync(origFile)) {
       deleteFileAdmin(productFile).then(
         () => moveFileAdmin(origFile, productFile)
-      ).catch(console.log)
+      ).catch(error => { throw error })
       message = messages.changed('restored')
+      reload = true;
     }
   } catch (err) {
     console.error(err)
     message = messages.error
   }
-  vscode.window.showInformationMessage(message)
+  if (reload) reloadWindow(message)
+  else vscode.window.showInformationMessage(message)
 }
 
 function computeChecksum(file) {
@@ -144,4 +148,20 @@ function moveFileAdmin(filePath, newPath, promptName = 'File Renamer') {
       }
     );
   });
+}
+
+function reloadWindow(message) {
+  if (message === undefined) {
+    console.info('Reloading window.');
+
+    vscode.commands.executeCommand('workbench.action.reloadWindow');
+  } else {
+    console.info('Requesting to reload window.');
+
+    vscode.window.showInformationMessage(message, {
+      title: 'Reload Window'
+    }).then(clicked => {
+      if (clicked) reloadWindow();
+    });
+  }
 }
