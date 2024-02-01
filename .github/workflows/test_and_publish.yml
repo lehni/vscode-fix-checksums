@@ -1,0 +1,25 @@
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Install Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 14.x
+
+      - name: Install vsce
+        run: npm install -g @vscode/vsce
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Publish Theme
+        run: vsce publish --pat ${{ secrets.VSCE_PAT }}
