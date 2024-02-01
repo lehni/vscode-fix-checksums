@@ -69,7 +69,7 @@ function restore() {
 function computeChecksum(file) {
   var contents = fs.readFileSync(file)
   return crypto
-    .createHash('md5')
+    .createHash('sha256')
     .update(contents)
     .digest('base64')
     .replace(/=+$/, '')
